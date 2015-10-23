@@ -65,7 +65,9 @@
 		draggable: { // options to pass to draggable handler
 			enabled: true,
 			scrollSensitivity: 20, // Distance in pixels from the edge of the viewport after which the viewport should scroll, relative to pointer
-			scrollSpeed: 15 // Speed at which the window should scroll once the mouse pointer gets within scrollSensitivity distance
+			scrollSpeed: 15, // Speed at which the window should scroll once the mouse pointer gets within scrollSensitivity distance
+			scrollHorizontal: false,
+			scrollVertical: true
 		}
 	})
 
@@ -1475,9 +1477,13 @@
 
 				function correctScrollPosition(event) {
 					var delta = null,
+						maxScrollLeft = null,
 						maxScrollTop = null,
+						scrollOccured = false,
 						scrollSensitivity = gridster.draggable.scrollSensitivity,
 						scrollSpeed = gridster.draggable.scrollSpeed,
+						scrollHorizontal = gridster.draggable.scrollHorizontal,
+						scrollVertical = gridster.draggable.scrollVertical,
 						scrollContainer = gridster.getScrollContainer(),
 						viewport = {
 							top: scrollContainer.getClientRects()[0].top,
@@ -1490,16 +1496,37 @@
 						$timeout.cancel(continueScrolling);
 					}
 
-					if (event.pageY - viewport.top < scrollSensitivity) {
-						delta = Math.max(scrollContainer.scrollTop - scrollSpeed, 0) - scrollContainer.scrollTop;
-						scrollContainer.scrollTop += delta;
-						mOffY += delta;
-						scheduleContinuedScrolling(event);
-					} else if (viewport.height - (event.pageY - viewport.top) < scrollSensitivity) {
-						maxScrollTop = scrollContainer.scrollHeight - (viewport.height - viewport.top) + scrollSensitivity;
-						delta = Math.min(maxScrollTop, scrollContainer.scrollTop + scrollSpeed) - scrollContainer.scrollTop;
-						scrollContainer.scrollTop += delta;
-						mOffY += delta;
+					if (scrollHorizontal) {
+						if (event.pageX - viewport.left < scrollSensitivity) {
+							delta = Math.max(scrollContainer.scrollLeft - scrollSpeed, 0) - scrollContainer.scrollLeft;
+							scrollContainer.scrollLeft += delta;
+							mOffX += delta;
+							scrollOccured = true;
+						} else if (viewport.width - (event.pageX - viewport.left) < scrollSensitivity) {
+							maxScrollLeft = scrollContainer.scrollWidth - (viewport.width - viewport.left) + scrollSensitivity;
+							delta = Math.min(maxScrollLeft, scrollContainer.scrollLeft + scrollSpeed) - scrollContainer.scrollLeft;
+							scrollContainer.scrollLeft += delta;
+							mOffX += delta;
+							scrollOccured = true;
+						}
+					}
+
+					if (scrollVertical) {
+						if (event.pageY - viewport.top < scrollSensitivity) {
+							delta = Math.max(scrollContainer.scrollTop - scrollSpeed, 0) - scrollContainer.scrollTop;
+							scrollContainer.scrollTop += delta;
+							mOffY += delta;
+							scrollOccured = true;
+						} else if (viewport.height - (event.pageY - viewport.top) < scrollSensitivity) {
+							maxScrollTop = scrollContainer.scrollHeight - (viewport.height - viewport.top) + scrollSensitivity;
+							delta = Math.min(maxScrollTop, scrollContainer.scrollTop + scrollSpeed) - scrollContainer.scrollTop;
+							scrollContainer.scrollTop += delta;
+							mOffY += delta;
+							scrollOccured = true;
+						}
+					}
+
+					if (scrollOccured) {
 						scheduleContinuedScrolling(event);
 					}
 				}
