@@ -1849,27 +1849,26 @@
 					var col = item.col;
 					// only change column if grabbing left edge
 					if (['w', 'nw', 'sw'].indexOf(handleClass) !== -1) {
-						col = gridster.pixelsToColumns(elmX, false);
+						col = gridster.pixelsToColumns(elmX - gridster.rowHeight * 0.5, false);
 					}
 
 					var row = item.row;
 					// only change row if grabbing top edge
 					if (['n', 'ne', 'nw'].indexOf(handleClass) !== -1) {
-						row = gridster.pixelsToRows(elmY, false);
+						row = gridster.pixelsToRows(elmY - gridster.rowHeight * 0.5, false);
 					}
 
 					var sizeX = item.sizeX;
 					// only change row if grabbing left or right edge
 					if (['n', 's'].indexOf(handleClass) === -1) {
-						sizeX = gridster.pixelsToColumns(elmW, true);
+						sizeX = gridster.pixelsToColumns(elmW - gridster.rowHeight * 0.5, true);
 					}
 
 					var sizeY = item.sizeY;
 					// only change row if grabbing top or bottom edge
 					if (['e', 'w'].indexOf(handleClass) === -1) {
-						sizeY = gridster.pixelsToRows(elmH, true);
+						sizeY = gridster.pixelsToRows(elmH - gridster.rowHeight * 0.5, true);
 					}
-
 
 					var canOccupy = row > -1 && col > -1 && sizeX + col <= gridster.columns && sizeY + row <= gridster.maxRows;
 					if (canOccupy && (gridster.pushing !== false || gridster.getItems(row, col, sizeX, sizeY, item).length === 0)) {
