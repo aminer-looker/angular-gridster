@@ -1121,6 +1121,9 @@
 								prevent = startEvent({
 									target: theEvtObj.target,
 									which: theEvtObj.which,
+									ctrlKey: theEvtObj.ctrlKey,
+									metaKey: theEvtObj.metaKey,
+									altKey: theEvtObj.altKey,
 									pointerId: pointerId,
 									pageX: pageX,
 									pageY: pageY
@@ -1366,6 +1369,10 @@
 
 					// only works if you have jQuery
 					if ($target.closest && $target.closest('.gridster-no-drag').length) {
+						return false;
+					}
+
+					if (e.metaKey || e.ctrlKey || e.altKey) {
 						return false;
 					}
 
@@ -1723,6 +1730,10 @@
 				var savedDraggable;
 
 				function mouseDown(e) {
+					if (e.metaKey || e.ctrlKey || e.altKey) {
+						return false;
+					}
+
 					switch (e.which) {
 						case 1:
 							// left mouse button
